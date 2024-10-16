@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Station Problem</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+
+        input[type="text"] {
+            width: 94%;
+            padding: 0.8rem;
+            border: 2px solid #dcdfe6;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #3498db;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        #result.impossible {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Gas Station Problem</h2>
+        <p>Input gas stations in the format: N, "g:c", "g:c", ...</p>
+        <input type="text" id="stationsInput" placeholder='e.g. 4, "3:1", "2:2", "1:2", "0:1"'>
+        <button onclick="findStartingStation()">Find Starting Station</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function findStartingStation() {
+            const input = document.getElementById('stationsInput').value;
+            const strArr = input.split(',').map(item => item.trim().replace(/"/g, ''));
+
+            const N = parseInt(strArr[0]);
+            const stations = strArr.slice(1).map(item => {
+                const [g, c] = item.split(':').map(Number);
+                return { gas: g, cost: c };
+            });
+
+            let totalGas = 0, totalCost = 0, tank = 0, startIndex = 0, surplus = 0;
+
+            for (let i = 0; i < N; i++) {
+                totalGas += stations[i].gas;
+                totalCost += stations[i].cost;
+                surplus += stations[i].gas - stations[i].cost;
+
+                if (surplus < 0) {
+                    startIndex = i + 1;
+                    surplus = 0;  
+                }
+            }
+
+            const resultElement = document.getElementById('result');
+            if (totalGas >= totalCost) {
+                resultElement.textContent = `Starting station: ${startIndex}`;
+                resultElement.classList.remove('impossible');
+            } else {
+                resultElement.textContent = "impossible";
+                resultElement.classList.add('impossible');
+            }
+        }
+    </script>
+
+</body>
+</html>
